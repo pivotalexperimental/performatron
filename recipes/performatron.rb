@@ -31,4 +31,11 @@ namespace :performatron do
     raise "Cannot build scenarios" unless system("rake performance:build_scenarios")
     upload_scenarios
   end
+  
+  task :run_httperf do
+    global_options = "--hog --session-cookie"
+    cmd = "httperf #{global_options} --server=#{host} --wsesslog=#{num_sessions},0,#{filename} --rate=#{rate} 2>&1"
+    puts "Running #{cmd}"
+    run(cmd)
+  end
 end
