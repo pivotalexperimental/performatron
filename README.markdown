@@ -2,19 +2,62 @@ Performatron
 ==================
 A language to write and execute benchmarks on rails applications.
 
+It uses object mother patterns to build benchmarking scenarios,
+`capistrano` to set up them on a benchmarking server, and `httperf` to test them against your application.
+
+Installing
+----------
+    ./script/plugin install git@github.com:pivotal/performatron.git
+
+Configuration
+-------------
+`/config/performatron.yml`
+
+    valid benchmarker options:
+      remote: true or false (whether to use capitrano to execute commands or not)
+      environment: the name of the multistage capistrano environment used to execute commands (you can test by running `cap XXX performatron:upload_scenarios`, which XXX is the name of the enviornment)
+
+    valid benchmarkee options:
+      remote: see above
+      environment: see above
+      host: the host used when running httperf (must be accessible to the benchmarker)
+
+Running
+-------
+To run, execute the follow rake task:
+
+    bash$ rake performatron:benchmark
+
+When you run the benchmarks, `httperf` runs the given sequences over and over against the benchmarkee server, creating new requests at the rate you desire.
+If the server is able to keep up with these requests, the existing ones will be answered before new ones are created.  If not, they begin to pile up and each
+takes longer and longer.  When this happens, you've saturated your system.
+
+It's often interesting to benchmark with a rate of 0, which means make requests sequentially instead of concurrently.
+
 How it works
 ------------
 
 Define three sets of simple objects in lib/performatron:
+
  * Scenarios
  * Sequences
  * Benchmarks
 
-Setup config/performatron.yml with the machine that will do the benchmarking (the benchmarker) and the machine that will
+Setup `config/performatron.yml` with the machine that will do the benchmarking (the benchmarker) and the machine that will
 be tested against (the benchmarkee).  You'll also need a dedicated environment to run benchmarks against, unless you're
 willing to reuse an existing environment and lose all data on it.
 
-Executing rake performatron:benchmark then runs all benchmarks and prints out a summary. 
+Executing the following rake task then runs all benchmarks and prints out a summary:
+
+    bash$ rake performatron:benchmark
+    **********************************************************************
+    Results for Scenario: hundred_users, Sequence: homepage
+      Total Requests Made: 1000 (1000 sessions)
+      Request Rate: 10 new requests/sec
+        Concurrency: 5 requests/sec
+        Average Reply Time: 304.7 ms
+        Average Reply Rate: 9.9 reply/s
+
 
 ### Scenarios
 A scenario represents the state of the database when a benchmark is run.  You might have multiple scenarios if you want
@@ -71,13 +114,25 @@ user in the scenario:
 ### Benchmarks
 
 Benchmarks are just pairs of sequences and scenarios.  They also include information on request rate and the number
-of requests to make.  If you create a benchmark with multiple scenarios and/or multiple sequences, all possible combinations
+of requests to make.
+
+    # Declared in lib/performatron/benchmarks.rb
+    Performatron::Benchmark.new(
+        :scenarios => :hundred_users,
+        :sequences => :homepage
+        :rate => 100,
+        :num_requests => 1000
+    )
+
+If you create a benchmark with multiple scenarios and/or multiple sequences, all possible combinations
 will be tested.
 
     # Declared in lib/performatron/benchmarks.rb
     Performatron::Benchmark.new(
-        :scenarios => :thousand_users,
-        :sequences => :public_functionality
+        :scenarios => :hundred_users,
+        :sequences => [:homepage, :user_login_and_messaging]
+        :rate => 10,
+        :num_requests => 200
     )
 
 
@@ -88,18 +143,21 @@ Requirements
  * You can create a new or reuse an existing rails environment to benchmark against
  * Your local test and remote performance databases must use MySQL
 
-Configuration
--------------
+Results
+-------
 
-/config/performatron.yml
+Each benchmark will print out 3 important pieces of information
 
-valid benchmarker options:
-  remote: true or false (whether to use capitrano to execute commands or not)
-  environment: the name of the multistage capistrano environment used to execute commands (you can test by running `cap XXX performatron:upload_scenarios`, which XXX is the name of the enviornment)
+    **********************************************************************
+    Results for Scenario: hundred_users, Sequence: homepage
+      Total Requests Made: 1000 (1000 sessions)
+      Request Rate: 10 new requests/sec
+        Concurrency: 5 requests/sec
+        Average Reply Time: 304.7 ms
+        Average Reply Rate: 9.9 reply/s
 
-valid benchmarkee options:
-  remote: see above
-  environment: see above
-  host: the host used when running httperf (must be accessible to the benchmarker)
+* *Concurrency*.  This is the maximum number of simultaneous requests that were outstanding at once.  This number should be less than the request rate, or requests starting piling up on top of each other.
+* *Reply Rate* in req/sec. It should be close to the request rate, or the system is not keeping up with the load.
+* *Reply Time* in ms.  You want this to be as low as possible.
 
 Copyright (c) 2009 Pivotal Labs & David Stevenson, released under the MIT license
