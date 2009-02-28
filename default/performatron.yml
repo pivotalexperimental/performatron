@@ -1,0 +1,7 @@
+benchmarker:
+  remote: false
+
+benchmarkee:
+  remote: true
+  environment: performance
+  host: localhost
