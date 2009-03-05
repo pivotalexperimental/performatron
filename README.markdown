@@ -21,6 +21,7 @@ Configuration
       remote: see above
       environment: see above
       host: the host used when running httperf (must be accessible to the benchmarker)
+      port: the port used when running httperf (optional setting defaults to port 80)
 
 Running
 -------

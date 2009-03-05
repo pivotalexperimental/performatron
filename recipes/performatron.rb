@@ -34,7 +34,8 @@ namespace :performatron do
   
   task :run_httperf do
     global_options = "--hog --session-cookie"
-    cmd = "httperf #{global_options} --server=#{host} --wsesslog=#{num_sessions},0,#{filename} --rate=#{rate} 2>&1"
+    port = config["port"] || 80
+    cmd = "httperf #{global_options} --server=#{host} --port=#{port} --wsesslog=#{num_sessions},0,#{filename} --rate=#{rate} 2>&1"
     puts "Running #{cmd}"
     run(cmd)
   end

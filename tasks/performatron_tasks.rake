@@ -41,7 +41,10 @@ namespace :performatron do
       bench.pieces.each do |piece|
         victim_config = Performatron::Configuration.instance["benchmarkee"]
         do_load_scenario(piece.scenario.sanitized_name)
-        output = do_run_httperf(:filename => "/tmp/scenarios/#{piece.sanitized_name}.bench", :rate => piece.rate, :num_sessions => piece.num_sessions, :host => victim_config["host"])
+        output = do_run_httperf(:filename => "/tmp/scenarios/#{piece.sanitized_name}.bench", 
+                                :rate => piece.rate, :num_sessions => piece.num_sessions, 
+                                :host => victim_config["host"],
+                                :port => victim_config["port"] || "80")
         piece.process_httperf_output(output)
       end
     end
@@ -70,7 +73,8 @@ namespace :performatron do
 
   task :run_httperf do
     global_options = "--hog --session-cookie"
-    cmd = "httperf #{global_options} --server=#{ENV["HOST"]} --wsesslog=#{ENV["NUM_SESSIONS"]},0,#{ENV["FILENAME"]} --rate=#{ENV["RATE"]} 2>&1"
+    port = ENV["PORT"] || 80
+    cmd = "httperf #{global_options} --server=#{ENV["HOST"]} --port=#{port} --wsesslog=#{ENV["NUM_SESSIONS"]},0,#{ENV["FILENAME"]} --rate=#{ENV["RATE"]} 2>&1"
     puts "Running #{cmd}"
     system(cmd)
   end
