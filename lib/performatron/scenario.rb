@@ -67,7 +67,6 @@ class Performatron::Scenario
 
   def self.clear_database(environment = RAILS_ENV)
     ActiveRecord::Schema.verbose = false
-    ActiveRecord::Base.connection.recreate_database(ActiveRecord::Base.configurations["test"]["database"], ActiveRecord::Base.configurations["test"])
     ActiveRecord::Base.establish_connection environment
     file = ENV['SCHEMA'] || "#{RAILS_ROOT}/db/schema.rb"
     load(file)
