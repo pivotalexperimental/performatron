@@ -53,6 +53,7 @@ namespace :performatron do
   task :run_httperf do
     options = ["--hog","--session-cookie", "--server=#{ENV["HOST"]}", "--wsesslog=#{ENV["NUM_SESSIONS"]},0,#{ENV["FILENAME"]}", "--rate=#{ENV["RATE"]}"]
     options << "--port=#{ENV["PORT"]}" if ENV["PORT"]
+    options << "--add-header='#{ENV["HEADER"]}'" if ENV["HEADER"]
     cmd = "httperf #{options.join(" ")} 2>&1"
     puts "Running #{cmd}"
     system(cmd)

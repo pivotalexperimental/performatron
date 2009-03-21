@@ -21,7 +21,8 @@ class Performatron::TaskRunner
         httperf_options = {:filename => "/tmp/scenarios/#{piece.sanitized_name}.bench", 
                                 :rate => piece.rate, :num_sessions => piece.num_sessions, 
                                 :host => victim_config["host"],
-                                :port => victim_config["port"] || "80"}
+                                :port => victim_config["port"] || "80",
+                                :header => basic_auth_header(victim_config)}
         output = run_task_on_benchmarker("performatron:run_httperf", httperf_options, true)
         piece.process_httperf_output(output)
       end
@@ -39,6 +40,15 @@ class Performatron::TaskRunner
   end
   
   private
+  
+  def basic_auth_header(config)
+    if config["basic_auth"]
+      user = config["basic_auth"]["username"]
+      pass = config["basic_auth"]["password"]
+      raise "Must specify 'username' and 'password' options under 'basic_auth' in performatron.yml" unless user && pass
+      "Authorization: Basic #{Base64.encode64("#{user}:#{pass}").strip}\\n"
+    end
+  end
   
   def run_task_on_benchmarkee(task_name, env_variables = {}, capture_output = false)
     run_task(Performatron::Configuration.instance["benchmarkee"], task_name, env_variables, capture_output)
@@ -60,10 +70,10 @@ class Performatron::TaskRunner
 
   def run_task(config, task_name, env_variables = {}, capture_output = false)
     if config["remote"]
-      env_str = env_variables.collect{|k, v| "-S#{k.to_s.downcase}=#{v}"}.join(" ") + " "
+      env_str = env_variables.collect{|k, v| v.nil? ? nil : "-S#{k.to_s.downcase}=#{v}"}.compact.join(" ") + " "
       cmd = "cap #{env_str}#{config["environment"]} #{task_name}".strip
     else
-      env_str = env_variables.collect{|k, v| "#{k.to_s.upcase}=#{v.to_s}"}.join(" ")
+      env_str = env_variables.collect{|k, v| v.nil? ? nil : "#{k.to_s.upcase}=#{v.to_s}"}.compact.join(" ")
       cmd = "rake #{task_name} RAILS_ENV=#{config["environment"]} #{env_str}".strip
     end
 

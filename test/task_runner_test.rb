@@ -91,7 +91,19 @@ class TaskRunnerTest < ActiveSupport::TestCase
     pieces.first.expects(:process_httperf_output).with("httperf_output_here")
     Performatron::Benchmark.expects(:loaded_benchmarks).returns(benchmarks)
     expect_command_ran_on_benchmarkee("performatron:load_scenario", :scenario => "scenario_name")
-    expect_command_ran_on_benchmarker("performatron:run_httperf", {:host => "test.host", :port => "3000", :filename => '/tmp/scenarios/benchmark_name.bench', :rate => 2.4, :num_sessions => 10}, true).returns("httperf_output_here")
+    expect_command_ran_on_benchmarker("performatron:run_httperf", {:host => "test.host", :port => "3000", :filename => '/tmp/scenarios/benchmark_name.bench', :rate => 2.4, :num_sessions => 10, :header => nil}, true).returns("httperf_output_here")
+    task_runner.run_benchmarks
+  end
+
+  def test_run_benchmarks__with_basic_auth
+    Performatron::Configuration.stubs(:instance).returns("benchmarkee" => @remote_config.merge("basic_auth" => {"username" => "david", "password" => "pass"}), "benchmarker" => @local_config)
+    scenario = Struct.new(:sanitized_name).new("scenario_name")
+    pieces = [Struct.new(:num_sessions, :rate, :scenario, :sanitized_name).new(10, 2.4, scenario, "benchmark_name")]
+    benchmarks = [Struct.new(:pieces).new(pieces)]
+    pieces.first.expects(:process_httperf_output).with("httperf_output_here")
+    Performatron::Benchmark.expects(:loaded_benchmarks).returns(benchmarks)
+    expect_command_ran_on_benchmarkee("performatron:load_scenario", :scenario => "scenario_name")
+    expect_command_ran_on_benchmarker("performatron:run_httperf", {:host => "test.host", :port => "3000", :filename => '/tmp/scenarios/benchmark_name.bench', :rate => 2.4, :num_sessions => 10, :header => "Authorization: Basic ZGF2aWQ6cGFzcw==\\n"}, true).returns("httperf_output_here")
     task_runner.run_benchmarks
   end
 

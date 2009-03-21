@@ -22,6 +22,9 @@ Configuration
       environment: see above
       host: the host used when running httperf (must be accessible to the benchmarker)
       port: the port used when running httperf (optional setting defaults to port 80)
+      basic_auth: (optional, http basic auth creds used to access the benchmarkee)
+        username: xxx
+        password: yyy
 
 Running
 -------
