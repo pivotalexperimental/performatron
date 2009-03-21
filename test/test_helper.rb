@@ -5,6 +5,8 @@ require "active_support"
 require 'active_support/test_case'
 require "active_record"
 require 'test/db_helper'
+gem "mocha"
+require "mocha"
 
 db_config = {
   'adapter'  => 'mysql',
@@ -19,7 +21,6 @@ ActiveRecord::Base.configurations = {'test' => db_config}
 
 RAILS_ENV="test"
 ENV["SCHEMA"] = File.dirname(__FILE__) + "/schema.rb"
-
 ActiveRecord::Base.establish_connection :test
 
 begin
