@@ -3,8 +3,8 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'test/db_helper'
 
-desc 'Default: run unit tests.'
-task :default => ['test:build_database', :test]
+desc 'Default: build database and run unit tests.'
+task :default => ['test:build_database_and_run_tests']
 
 desc 'Test the performatron plugin.'
 Rake::TestTask.new(:test) do |t|
@@ -24,6 +24,9 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
 end
 
 namespace :test do
+  desc 'build database and run unit tests.'
+  task :build_database_and_run_tests => ['test:build_database', :test]
+
   desc 'Build the test database with options [DB_USER=user] [DB_PASSWORD=password]'
   task :build_database => [:drop_database] do
     %x( mysqladmin --user=#{ENV['DB_USER']} --password=#{ENV['DB_PASSWORD']} create performatron_test )

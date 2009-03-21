@@ -5,9 +5,16 @@ A language to write and execute benchmarks on rails applications.
 It uses object mother patterns to build benchmarking scenarios,
 `capistrano` to set up them on a benchmarking server, and `httperf` to test them against your application.
 
+Community
+---------
+ * Pivotal Labs Open Source Mailing List: http://groups.google.com/group/pivotallabsopensource
+ * Pivotal Tracker Bug/Feature Tracker: http://www.pivotaltracker.com/projects/10679
+ * GitHub Source Code Repository: http://github.com/pivotal/performatron/tree/master
+ * Continuous Integration: http://ci.pivotallabs.com:3333/builds/Performatron
+
 Installing
 ----------
-    ./script/plugin install git@github.com:pivotal/performatron.git
+    ./script/plugin install git://github.com/pivotal/performatron.git
 
 Configuration
 -------------
