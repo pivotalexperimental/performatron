@@ -4,7 +4,7 @@ require 'rake/rdoctask'
 require 'test/db_helper'
 
 desc 'Default: run unit tests.'
-task :default => :test
+task :default => ['test:build_database', :test]
 
 desc 'Test the performatron plugin.'
 Rake::TestTask.new(:test) do |t|
