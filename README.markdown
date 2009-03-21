@@ -25,7 +25,7 @@ Configuration
 
 Running
 -------
-To run, execute the follow rake task:
+To run, execute the following rake task:
 
     bash$ rake performatron:benchmark
 
@@ -157,8 +157,8 @@ Each benchmark will print out 3 important pieces of information
         Average Reply Time: 304.7 ms
         Average Reply Rate: 9.9 reply/s
 
-* *Concurrency*.  This is the maximum number of simultaneous requests that were outstanding at once.  This number should be less than the request rate, or requests starting piling up on top of each other.
-* *Reply Rate* in req/sec. It should be close to the request rate, or the system is not keeping up with the load.
+* *Concurrency*.  This is the maximum number of simultaneous requests that were outstanding at once.  This number should be less than the request rate, or requests started piling up on top of each other.
 * *Reply Time* in ms.  You want this to be as low as possible.
+* *Reply Rate* in req/sec. It should be close to the request rate, or the system is not keeping up with the load.
 
 Copyright (c) 2009 Pivotal Labs & David Stevenson, released under the MIT license
