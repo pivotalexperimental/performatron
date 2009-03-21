@@ -25,7 +25,7 @@ end
 
 namespace :test do
   desc 'Build the test database with options [DB_USER=user] [DB_PASSWORD=password]'
-  task :build_database do
+  task :build_database => [:drop_database] do
     %x( mysqladmin --user=#{ENV['DB_USER']} --password=#{ENV['DB_PASSWORD']} create performatron_test )
   end
 
@@ -33,7 +33,4 @@ namespace :test do
   task :drop_database do
     %x( mysqladmin --user=#{ENV['DB_USER']} --password=#{ENV['DB_PASSWORD']} -f drop performatron_test )
   end
-
-  desc 'Rebuild the test database with options [DB_USER=user] [DB_PASSWORD=password]'
-  task :rebuild_database => [:drop_database, :build_database]
 end
