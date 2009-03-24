@@ -15,7 +15,9 @@ class Performatron::Scenario
   end
 
   def build
-    self.proc.call(self)
+    ActiveRecord::Base.silence do
+      self.proc.call(self)
+    end
   end
 
   def sanitized_name
