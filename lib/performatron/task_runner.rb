@@ -70,10 +70,10 @@ class Performatron::TaskRunner
 
   def run_task(config, task_name, env_variables = {}, capture_output = false)
     if config["remote"]
-      env_str = env_variables.collect{|k, v| v.nil? ? nil : "-S#{k.to_s.downcase}=#{v}"}.compact.join(" ") + " "
+      env_str = env_variables.collect{|k, v| v.nil? ? nil : "'-S#{k.to_s.downcase}=#{v}'"}.compact.join(" ") + " "
       cmd = "cap #{env_str}#{config["environment"]} #{task_name}".strip
     else
-      env_str = env_variables.collect{|k, v| v.nil? ? nil : "#{k.to_s.upcase}=#{v.to_s}"}.compact.join(" ")
+      env_str = env_variables.collect{|k, v| v.nil? ? nil : "'#{k.to_s.upcase}=#{v.to_s}'"}.compact.join(" ")
       cmd = "rake #{task_name} RAILS_ENV=#{config["environment"]} #{env_str}".strip
     end
 

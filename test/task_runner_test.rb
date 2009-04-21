@@ -62,7 +62,7 @@ class TaskRunnerTest < ActiveSupport::TestCase
   end
   
   def test_run_task__when_local_with_vars__creates_rake_compatible_env_variables
-    task_runner.expects(:system).with("rake some:task RAILS_ENV=perf TWO_WORDS=OmG X=y").returns(true)
+    task_runner.expects(:system).with("rake some:task RAILS_ENV=perf 'TWO_WORDS=OmG' 'X=y'").returns(true)
     task_runner.send(:run_task, @local_config, "some:task", {:x => "y", "two_Words" => "OmG"})
   end
     
@@ -79,7 +79,7 @@ class TaskRunnerTest < ActiveSupport::TestCase
   end
 
   def test_run_task__when_remote_with_vars__creates_cap_compatible_vars
-    task_runner.expects(:system).with("cap -Stwo_words=OmG -Sx=y perf some:task").returns(true)
+    task_runner.expects(:system).with("cap '-Stwo_words=OmG' '-Sx=y' perf some:task").returns(true)
     task_runner.send(:run_task, @remote_config, "some:task", {:x => "y", "two_Words" => "OmG"})
   end
   
