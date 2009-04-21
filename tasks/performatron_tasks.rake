@@ -46,6 +46,7 @@ namespace :performatron do
     require File.join(RAILS_ROOT, "lib", "performatron", "benchmarks")
   end
 
+  desc "Run Performatron benchmark"
   task :benchmark => [:build_scenarios, :load_datastores, :build_benchmarks, :upload_benchmarks, :run_benchmarks, :print_benchmark_results] do
 
   end
