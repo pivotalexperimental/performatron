@@ -107,5 +107,9 @@ class Performatron::Benchmark
     def human_readable_results
       Performatron::StandardFormatter.new.format(results)
     end
+
+    def csv_results(time = Time.now)
+      Performatron::CsvFormatter.new.format(results, time)
+    end
   end
 end
