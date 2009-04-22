@@ -59,6 +59,10 @@ class Performatron::Benchmark
 
     include Performatron::Sequence::Dsl
 
+    def initialize
+#      @parser = HttpPerfOutputParser.new
+    end
+
     def get_httperf
       self.buffer = []
       self.sequence.proc.call(self)
@@ -74,6 +78,8 @@ class Performatron::Benchmark
     end
 
     def process_httperf_output(output)
+      # stats= HttpPerfOutputParser.parse(output)
+
       self.httperf_output = output
       self.httperf_stats = {}
       self.httperf_stats[:max_concurrency] = output.match(/(\d+) concurrent connections/)[1]
@@ -97,14 +103,18 @@ class Performatron::Benchmark
     def num_sessions
       (benchmark.num_requests / buffer.size).to_i + 1
     end
-
+    
     def print_results
-      puts "Results for Scenario: #{scenario.name}, Sequence: #{sequence.name}:"
-      puts "  Total Requests Made: #{benchmark.num_requests} (#{num_sessions} sessions)"
-      puts "  Request Rate: #{benchmark.rate} new requests/sec"
-      puts "  Concurrency: #{httperf_stats[:max_concurrency]} requests/sec"
-      puts "    Average Reply Time: #{httperf_stats[:reply_time_avg]} ms"
-      puts "    Average Reply Rate: #{httperf_stats[:reply_rate_avg]} reply/s"
+#      StandardFormatter.new({:scenario => foo, :httperf_stats => httperf_stats})
+#      CsvFormatter
+      results = <<RESULTS
+Results for Scenario: #{scenario.name}, Sequence: #{sequence.name}:
+  Total Requests Made: #{benchmark.num_requests} (#{num_sessions} sessions)
+  Request Rate: #{benchmark.rate} new requests/sec
+  Concurrency: #{httperf_stats[:max_concurrency]} requests/sec
+    Average Reply Time: #{httperf_stats[:reply_time_avg]} ms
+    Average Reply Rate: #{httperf_stats[:reply_rate_avg]} reply/s
+RESULTS
     end
   end
 end

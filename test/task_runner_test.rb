@@ -65,7 +65,7 @@ class TaskRunnerTest < ActiveSupport::TestCase
     task_runner.expects(:system).with("rake some:task RAILS_ENV=perf 'TWO_WORDS=OmG' 'X=y'").returns(true)
     task_runner.send(:run_task, @local_config, "some:task", {:x => "y", "two_Words" => "OmG"})
   end
-    
+
   def test_run_task__when_capturing__returns_output_of_cmd
     Tempfile.any_instance.stubs(:path).returns("/tmp/task_runner.tmp")
     File.open("/tmp/task_runner.tmp", "w") { |f| f.write "hello world!" }
