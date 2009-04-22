@@ -116,7 +116,16 @@ class TaskRunnerTest < ActiveSupport::TestCase
     task_runner.print_benchmark_results
   end
   
-  
+  def test_prints_benchmark_results
+    Performatron::Configuration.stubs(:instance).returns("results_format" => "csv")
+    piece = mock("piece")
+    piece.expects(:csv_results)
+    benchmarks = [Struct.new(:pieces).new([piece])]
+    Performatron::Benchmark.expects(:loaded_benchmarks).returns(benchmarks)
+    task_runner.print_benchmark_results
+  end
+
+
   private
   
   def expect_command_ran_on_benchmarkee(cmd, options = nil, capture = nil)
