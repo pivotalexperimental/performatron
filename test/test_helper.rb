@@ -5,6 +5,7 @@ require "active_support"
 require 'active_support/test_case'
 require "active_record"
 require 'test/db_helper'
+require 'tempfile'
 gem "mocha"
 require "mocha"
 
