@@ -49,7 +49,7 @@ Session length histogram: 0 301
 ** Execute performatron:print_benchmark_results
 HTTPERF_OUTPUT
     @bench.pieces.first.process_httperf_output(httperf_output)
-    output = @bench.pieces.first.results
+    output = @bench.pieces.first.human_readable_results
     assert output.include?("Average Reply Time: 254.3 ms")
   end
 

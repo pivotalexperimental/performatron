@@ -60,7 +60,7 @@ class Performatron::Benchmark
     include Performatron::Sequence::Dsl
 
     def initialize
-#      @parser = HttpPerfOutputParser.new
+      @parser = Performatron::HttperfOutputParser.new
     end
 
     def get_httperf
@@ -78,18 +78,8 @@ class Performatron::Benchmark
     end
 
     def process_httperf_output(output)
-      # stats= HttpPerfOutputParser.parse(output)
-
       self.httperf_output = output
-      self.httperf_stats = {}
-      self.httperf_stats[:max_concurrency] = output.match(/(\d+) concurrent connections/)[1]
-      self.httperf_stats[:reply_rate_avg] = output.match(/Reply rate.*avg (\d+\.\d+)/)[1]
-      self.httperf_stats[:reply_rate_max] = output.match(/Reply rate.*max (\d+\.\d+)/)[1]
-      self.httperf_stats[:reply_rate_min] = output.match(/Reply rate.*min (\d+\.\d+)/)[1]
-      self.httperf_stats[:reply_rate_stddev] = output.match(/Reply rate.*stddev (\d+\.\d+)/)[1]
-      self.httperf_stats[:reply_time_avg] = output.match(/Reply time.*response (\d+.\d+)/)[1]
-      self.httperf_stats[:responses_not_found] = output.match(/Reply status.*4xx=(\d+)/)[1]
-      self.httperf_stats[:responses_error] = output.match(/Reply status.*5xx=(\d+)/)[1]
+      self.httperf_stats= @parser.parse(output)
     end
 
     def [](key)
@@ -104,7 +94,7 @@ class Performatron::Benchmark
       (benchmark.num_requests / buffer.size).to_i + 1
     end
     
-    def results
+    def human_readable_results   
 #      StandardFormatter.new({:scenario => foo, :httperf_stats => httperf_stats})
 #      CsvFormatter
       results = <<RESULTS

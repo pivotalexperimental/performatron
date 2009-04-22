@@ -33,7 +33,7 @@ class Performatron::TaskRunner
     Performatron::Benchmark.loaded_benchmarks.each do |bench|
       bench.pieces.each do |piece|
         puts "**********************************************************************"
-        puts piece.results
+        puts piece.human_readable_results
         puts
       end
     end    
