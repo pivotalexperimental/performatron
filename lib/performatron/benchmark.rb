@@ -104,7 +104,7 @@ class Performatron::Benchmark
       (benchmark.num_requests / buffer.size).to_i + 1
     end
     
-    def print_results
+    def results
 #      StandardFormatter.new({:scenario => foo, :httperf_stats => httperf_stats})
 #      CsvFormatter
       results = <<RESULTS

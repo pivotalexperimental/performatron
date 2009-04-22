@@ -110,7 +110,7 @@ class TaskRunnerTest < ActiveSupport::TestCase
 
   def test_print_benchmark_results
     piece = mock("piece")
-    piece.expects(:print_results)
+    piece.expects(:results)
     benchmarks = [Struct.new(:pieces).new([piece])]
     Performatron::Benchmark.expects(:loaded_benchmarks).returns(benchmarks)
     task_runner.print_benchmark_results
