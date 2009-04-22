@@ -93,18 +93,19 @@ class Performatron::Benchmark
     def num_sessions
       (benchmark.num_requests / buffer.size).to_i + 1
     end
-    
-    def human_readable_results   
-#      StandardFormatter.new({:scenario => foo, :httperf_stats => httperf_stats})
-#      CsvFormatter
-      results = <<RESULTS
-Results for Scenario: #{scenario.name}, Sequence: #{sequence.name}:
-  Total Requests Made: #{benchmark.num_requests} (#{num_sessions} sessions)
-  Request Rate: #{benchmark.rate} new requests/sec
-  Concurrency: #{httperf_stats[:max_concurrency]} requests/sec
-    Average Reply Time: #{httperf_stats[:reply_time_avg]} ms
-    Average Reply Rate: #{httperf_stats[:reply_rate_avg]} reply/s
-RESULTS
+
+    def results
+      {
+        :scenario => scenario.name,
+        :sequence => sequence.name,
+        :num_requests => benchmark.num_requests,
+        :num_sessions => num_sessions,
+        :request_rate => benchmark.rate,
+      }.merge(httperf_stats)
+    end
+
+    def human_readable_results
+      Performatron::StandardFormatter.new.format(results)
     end
   end
 end
