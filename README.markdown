@@ -108,6 +108,16 @@ PUT, and DELETE requests in a row.  A simple example would be just to fetch the 
       bench.get "/"
     end
 
+The #get and #delete methods take two parameters: URL and the URL Parameters Hash:
+
+    bench.get "/users/1", {:url_param => 'value1'}
+    bench.delete "/users/1", {:url_param => 'value1'}
+
+The #post and #put methods take three parameters: URL, URL Parameters Hash, and Post body Hash:
+
+    bench.post "/login", {:url_param => 'value1'}, :login => {:email_address => user["username"], :password => "test"}
+    bench.put "/users/1", {:url_param => 'value1'}, :user => {:name => "John Doe"}
+
 Typically, sequences would tell a story, such as "a user logs in, checks their messages,
 writes a message, and logs out".  By using the data exported from a scenario, you can check these stories for every
 user in the scenario:
