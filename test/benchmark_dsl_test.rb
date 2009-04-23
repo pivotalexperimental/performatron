@@ -1,24 +1,8 @@
 require File.dirname(__FILE__) + "/test_helper"
 
-class BenchmarkHarness
-  include Performatron::Sequence::Dsl
-
-  attr_reader :scenario
-  attr_accessor :buffer
-
-  def initialize(scenario)
-    @scenario = scenario
-    self.buffer = []
-  end
-
-  def output(str)
-    buffer << str
-  end
-end
-
-class SequenceDslTest < ActiveSupport::TestCase
+class BenchmarkDslTest < ActiveSupport::TestCase
   def setup
-    @benchmark = BenchmarkHarness.new(Performatron::Scenario.new("test scenario") {})
+    @benchmark = Performatron::BenchmarkPiece.new
   end
   
   def test_get

@@ -1,5 +1,6 @@
 require File.dirname(__FILE__) + "/test_helper"
 
+# TODO: Consider moving some tests into benchmark_piece_test.rb
 class BenchmarkTest < ActiveSupport::TestCase
   def setup
     Performatron::Sequence.loaded_sequences = {}
