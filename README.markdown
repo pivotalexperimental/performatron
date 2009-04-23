@@ -168,6 +168,21 @@ user in the scenario:
       end
     end
 
+Sequences also support the Httperf concept of "sessions", which are independent sessions with independent tcp connections,
+cookies, etc.  Here an example with each user having their own session:
+
+    Performatron::Sequence.new(:multiple_user_login_and_messaging) do |bench|
+      bench[:users].each do |user|
+        bench.session do
+          bench.get "/login"
+          bench.post "/login", {}, :login => {:email_address => user["username"], :password => "test"}
+          bench.get "/messages"
+          bench.post "/messages/new", {}, :message => {:to_id => bench[:users].rand, :subject => "Hello world", :body => "Hi!"}
+        end
+      end
+    end
+
+
 ### Benchmarks
 
 Benchmarks are just pairs of sequences and scenarios.  They also include information on request rate and the number
