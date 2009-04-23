@@ -2,7 +2,7 @@ class Performatron::StandardFormatter
   def format(results)
     results = <<RESULTS
 Results for Scenario: #{results[:scenario]}, Sequence: #{results[:sequence]}:
-  Total Requests Made: #{results[:num_sessions]} (#{results[:num_sessions]} sessions)
+  Total Requests Made: #{results[:total_requests]} (#{results[:num_sessions]} sessions)
   Request Rate: #{results[:rate]} new requests/sec
   Concurrency: #{results[:max_concurrency]} requests/sec
     Average Reply Time: #{results[:reply_time_avg]} ms

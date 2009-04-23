@@ -1,6 +1,7 @@
 class Performatron::HttperfOutputParser
   def parse(output)
     httperf_stats = {}
+    httperf_stats[:total_requests] = output.match(/Total: connections \d+ requests (\d+) /)[1]
     httperf_stats[:max_concurrency] = output.match(/(\d+) concurrent connections/)[1]
     httperf_stats[:reply_rate_avg] = output.match(/Reply rate.*avg (\d+\.\d+)/)[1]
     httperf_stats[:reply_rate_max] = output.match(/Reply rate.*max (\d+\.\d+)/)[1]
