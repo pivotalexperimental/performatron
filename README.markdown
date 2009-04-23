@@ -142,7 +142,7 @@ of requests to make.
         :scenarios => :hundred_users,
         :sequences => :homepage
         :rate => 100,
-        :num_requests => 1000
+        :num_sessions => 1000
     )
 
 If you create a benchmark with multiple scenarios and/or multiple sequences, all possible combinations
@@ -153,7 +153,7 @@ will be tested.
         :scenarios => :hundred_users,
         :sequences => [:homepage, :user_login_and_messaging]
         :rate => 10,
-        :num_requests => 200
+        :num_sessions => 200
     )
 
 

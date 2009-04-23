@@ -34,20 +34,20 @@ class Performatron::BenchmarkPiece
   end
 
   def rate
-    benchmark.rate / buffer.size
+    benchmark.rate
   end
 
   def num_sessions
-    (benchmark.num_requests / buffer.size).to_i + 1
+    benchmark.num_sessions
   end
 
   def results
     {
       :scenario => scenario.name,
       :sequence => sequence.name,
-      :num_requests => benchmark.num_requests,
+      :num_sessions => benchmark.num_sessions,
       :num_sessions => num_sessions,
-      :request_rate => benchmark.rate,
+      :rate => benchmark.rate,
     }.merge(httperf_stats)
   end
 

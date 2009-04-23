@@ -12,5 +12,5 @@
 #     :scenarios => [:hundred_users, :thousand_users]
 #     :sequences => [:public_functionality, :private_functionality]
 #     :rate => 50.0,
-#     :num_requests => 500
+#     :num_sessions => 500
 # )
