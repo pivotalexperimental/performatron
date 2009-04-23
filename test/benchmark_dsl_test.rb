@@ -44,4 +44,26 @@ class BenchmarkDslTest < ActiveSupport::TestCase
     @benchmark.delete "/hello/world", {:hello => "world"}
     assert_equal ["/hello/world?_method=delete&hello=world method=POST contents=''"], @benchmark.buffer
   end
+
+  def test_session__creates_a_blank_line_after_the_block_is_executed
+    @benchmark.session do
+      @benchmark.get "/hello/world"
+      @benchmark.get "/goodbye/world"
+    end
+    @benchmark.session do
+      @benchmark.get "/foo/bar"
+      @benchmark.get "/baz"
+    end
+    assert_equal(
+      [
+        "/hello/world",
+        "/goodbye/world",
+        "",
+        "/foo/bar",
+        "/baz",
+        ""
+      ],
+      @benchmark.buffer
+    )
+  end
 end

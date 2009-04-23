@@ -77,6 +77,11 @@ class Performatron::BenchmarkPiece
       post(path, query_params.merge("_method" => "delete"), post_body)
     end
 
+    def session
+      yield
+      output("")
+    end
+
     private
 
     def get_full_path(path, query_params)
