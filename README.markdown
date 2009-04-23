@@ -20,9 +20,45 @@ Configuration
 -------------
 `/config/performatron.yml`
 
+    An example of performatron.yml is:
+      results_format: human_readable
+      
+      default:
+        benchmarker:
+          remote: false
+
+        benchmarkee:
+          remote: true
+          environment: performance
+          host: localhost
+          port: 80
+
+      demo:
+        benchmarker:
+          remote: true
+          environment: test
+
+        benchmarkee:
+          remote: true
+          environment: demo
+          host: demo.host.com
+          basic_auth:
+            username: performatron
+            password: your_basic_auth_password
+
+    results_format: Can be 'human_readable' or 'csv'
+
+    setup name (default):
+      Performatron supports multiple setups (benchmarker + benchmarkee) for
+      your various benchmarking setups.  When you first install Performatron,
+      a default setup is generated. You can tell Performatron to run a setup
+      by running `rake performatron:benchmark SETUP=demo`.
+
     valid benchmarker options:
-      remote: true or false (whether to use capitrano to execute commands or not)
-      environment: the name of the multistage capistrano environment used to execute commands (you can test by running `cap XXX performatron:upload_scenarios`, which XXX is the name of the enviornment)
+      remote:      true or false (whether to use capitrano to execute commands or not)
+      environment: the name of the multistage capistrano environment used to execute
+                   commands (you can test by running `cap XXX performatron:upload_scenarios`,
+                   in which XXX is the name of the enviornment)
 
     valid benchmarkee options:
       remote: see above

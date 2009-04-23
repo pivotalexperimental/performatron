@@ -1,8 +1,9 @@
-benchmarker:
-  remote: false
+default:
+  benchmarker:
+    remote: false
 
-benchmarkee:
-  remote: true
-  environment: performance
-  host: localhost
-  port: 80
+  benchmarkee:
+    remote: true
+    environment: performance
+    host: localhost
+    port: 80
