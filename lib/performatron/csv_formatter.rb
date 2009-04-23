@@ -5,7 +5,7 @@ class Performatron::CsvFormatter
     array << surround_with_quotes(time.strftime("%Y-%m-%d %H:%M"))
     array << surround_with_quotes(results[:scenario])
     array << surround_with_quotes(results[:sequence])
-    array << results[:num_sessions]
+    array << results[:total_requests]
     array << results[:num_sessions]
     array << results[:rate]
     array << results[:max_concurrency]

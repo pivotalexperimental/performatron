@@ -27,7 +27,7 @@ class BenchmarkTest < ActiveSupport::TestCase
     assert output.include?("Timestamp,Scenario,Sequence,NumRequests,NumSessions,Rate,MaxConcurrency,AverageReplyTime,AverageReplyRate")
     expected_time = now.strftime("%Y-%m-%d %H:%M")
     data_line = output.split("\n")[1]
-    assert_equal "\"#{expected_time}\",\"test scn\",\"test seq1\",100,100,1.0,5,254.3,6.9", data_line
+    assert_equal "\"#{expected_time}\",\"test scn\",\"test seq1\",301,100,1.0,5,254.3,6.9", data_line
   end
 
   def test_initialize__with_one_of_each
