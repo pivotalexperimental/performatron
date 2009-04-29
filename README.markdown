@@ -144,17 +144,17 @@ PUT, and DELETE requests in a row.  A simple example would be just to fetch the 
       bench.get "/"
     end
 
-The #get and #delete methods take two parameters: URL and the URL Parameters Hash:
+The #get and #delete methods take three parameters: URL, the URL Parameters Hash, and an optional 'think time':
 
-    bench.get "/users/1", {:url_param => 'value1'}
-    bench.delete "/users/1", {:url_param => 'value1'}
+    bench.get "/users/1", {:url_param => 'value1'}, 2.0
+    bench.delete "/users/1", {:url_param => 'value1'}, 2.0
 
-The #post and #put methods take three parameters: URL, URL Parameters Hash, and Post body Hash:
+The #post and #put methods take four parameters: URL, URL Parameters Hash, Post body Hash, and the optional 'think time':
 
-    bench.post "/login", {:url_param => 'value1'}, :login => {:email_address => user["username"], :password => "test"}
-    bench.put "/users/1", {:url_param => 'value1'}, :user => {:name => "John Doe"}
+    bench.post "/login", {:url_param => 'value1'}, :login => {:email_address => user["username"], :password => "test"}, 2.0
+    bench.put "/users/1", {:url_param => 'value1'}, :user => {:name => "John Doe"}, 2.0
 
-Typically, sequences would tell a story, such as "a user logs in, checks their messages,
+Typically, sequences would tell a story, such as "a user logs in, checks their messages for a few (4, in this case) seconds,
 writes a message, and logs out".  By using the data exported from a scenario, you can check these stories for every
 user in the scenario:
 
@@ -162,7 +162,7 @@ user in the scenario:
       bench[:users].each do |user|
         bench.get "/login"
         bench.post "/login", {}, :login => {:email_address => user["username"], :password => "test"}
-        bench.get "/messages"
+        bench.get "/messages", {}, 4
         bench.post "/messages/new", {}, :message => {:to_id => bench[:users].rand, :subject => "Hello world", :body => "Hi!"}
         bench.delete "/login"
       end

@@ -16,7 +16,7 @@ class BenchmarkPieceTest < ActiveSupport::TestCase
   end
 
   def test_get__with_query_params_and_think_time
-    @benchmark.get("/hello/world", {:hello => "world"}, 2.0)
+    @benchmark.get "/hello/world", {:hello => "world"}, 2.0
     assert_equal ["/hello/world?hello=world think=2.0"], @benchmark.buffer
   end
 
@@ -31,7 +31,7 @@ class BenchmarkPieceTest < ActiveSupport::TestCase
   end
 
   def test_post__with_query_params_and_body_and_think_time
-    @benchmark.post("/hello/world", {:query => "param"}, {:body => "data"}, 2.0)
+    @benchmark.post "/hello/world", {:query => "param"}, {:body => "data"}, 2.0
     assert_equal ["/hello/world?query=param method=POST contents='body=data' think=2.0"], @benchmark.buffer
   end
 
@@ -46,7 +46,7 @@ class BenchmarkPieceTest < ActiveSupport::TestCase
   end
 
   def test_put__with_query_params_and_body_and_think_time
-    @benchmark.put("/hello/world", {:query => "param"}, {:body => "data"}, 2.0)
+    @benchmark.put "/hello/world", {:query => "param"}, {:body => "data"}, 2.0
     assert_equal ["/hello/world?_method=put&query=param method=POST contents='body=data' think=2.0"], @benchmark.buffer
   end
 
@@ -66,7 +66,7 @@ class BenchmarkPieceTest < ActiveSupport::TestCase
   end
 
   def test_delete__with_query_params_and_post_body_and_think_time
-    @benchmark.delete("/hello/world", {:hello => "world"}, {:body => "data"}, 2.0)
+    @benchmark.delete "/hello/world", {:hello => "world"}, {:body => "data"}, 2.0
     assert_equal ["/hello/world?_method=delete&hello=world method=POST contents='body=data' think=2.0"], @benchmark.buffer
   end
 
