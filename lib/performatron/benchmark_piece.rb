@@ -60,21 +60,21 @@ class Performatron::BenchmarkPiece
   end
 
   module BenchmarkDsl
-    def get(path, query_params = {})
-      output("#{get_full_path(path, query_params)}")
+    def get(path, query_params = {}, think_time=nil)
+      output("#{get_full_path(path, query_params)}#{think_out(think_time)}")
     end
 
-    def post(path, query_params = {}, post_body = {})
+    def post(path, query_params = {}, post_body = {}, think_time=nil)
       post_body_str = post_body.is_a?(Hash) ? post_body.to_query : post_body
-      output("#{get_full_path(path, query_params)} method=POST contents='#{post_body_str}'")
+      output("#{get_full_path(path, query_params)} method=POST contents='#{post_body_str}'#{think_out(think_time)}")
     end
 
-    def put(path, query_params = {}, post_body = {})
-      post(path, query_params.merge("_method" => "put"), post_body)
+    def put(path, query_params = {}, post_body = {}, think_time=nil)
+      post(path, query_params.merge("_method" => "put"), post_body, think_time)
     end
 
-    def delete(path, query_params = {}, post_body = {})
-      post(path, query_params.merge("_method" => "delete"), post_body)
+    def delete(path, query_params = {}, post_body = {}, think_time=nil)
+      post(path, query_params.merge("_method" => "delete"), post_body, think_time)
     end
 
     def session
@@ -83,6 +83,10 @@ class Performatron::BenchmarkPiece
     end
 
     private
+
+    def think_out(think_time)
+      think_time ? " think=#{think_time.to_f}" : ''
+    end
 
     def get_full_path(path, query_params)
       "#{path}#{query_params.empty? ? "" : "?#{query_params.to_query}"}"
