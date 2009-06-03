@@ -7,10 +7,14 @@ class Performatron::Scenario
   attr_reader :name
   attr_reader :proc
   attr_reader :data_store
+  attr_reader :base_sql_dump
+  
   def initialize(name, options = {}, &block)
+    options.symbolize_keys!
     @name = name.to_s
     @proc = block
     @data_store = {}
+    @base_sql_dump = options[:base_sql_dump]
     self.class.loaded_scenarios[self.name] = self
   end
 
@@ -34,17 +38,37 @@ class Performatron::Scenario
 
   def self.build_all(environment = RAILS_ENV)
     loaded_scenarios.values.each do |scenario|
-      log("Building scenario #{scenario.name}")
-      log("  clearing database")
-      clear_database(environment)
-      log("  building data")
-      scenario.build
-      log("  dumping datastore")
-      scenario.dump_data_store
-      log("  dumping database")
-      dump_database(scenario.sanitized_name)
-      log("  done")
+      scenario.do_build(environment)
     end
+  end
+  
+  def do_build(environment = RAILS_ENV)
+    log("Building scenario #{self.name}")
+    log("  clearing database")
+    self.class.clear_database(environment)
+    if self.base_sql_dump.present?
+      log("  loading base SQL dump")
+      self.load_base_sql(environment)
+    end
+    log("  building data")
+    self.build
+    log("  dumping datastore")
+    self.dump_data_store
+    log("  dumping database")
+    self.class.dump_database(self.sanitized_name)
+    log("  done")    
+  end
+  
+  def load_base_sql(environment = RAILS_ENV)
+    log("    from #{self.base_sql_dump}")
+    current_migrations = ActiveRecord::Base.connection.select_values("SELECT * FROM schema_migrations").sort
+    dirname = File.dirname(self.base_sql_dump)
+    filename = File.basename(self.base_sql_dump, ".sql")
+    self.class.load_database(filename, environment, dirname)
+    dump_migrations = ActiveRecord::Base.connection.select_values("SELECT * FROM schema_migrations").sort
+    expected_migrations = current_migrations - dump_migrations
+    
+    raise "Migrations #{expected_migrations.join(",")} not present in base SQL dump file (#{self.base_sql_dump})" if expected_migrations.present?
   end
 
   def self.load_all_datastores(directory = "/tmp/scenarios")
@@ -108,6 +132,10 @@ class Performatron::Scenario
   private
   def self.log(msg)
     puts "  * #{msg}" if verbose
+  end
+  
+  def log(msg)
+    self.class.log(msg)
   end
 
   def convert_hash_to_attributes(hash)

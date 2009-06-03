@@ -13,3 +13,8 @@
 #     scenario[:users] << User.create!(:username => "user_#{i}", :password => "test")
 #   end
 # end
+
+
+# Performatron::Scenario.new(:production_plus_1k_users, :base_sql_dump => "tmp/cache/prod.sql") do |scenario|
+#   1000.times { Factory(:user) }
+# end

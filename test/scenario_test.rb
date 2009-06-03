@@ -84,6 +84,26 @@ INSERT INTO `somethings` VALUES (1,'hello world',NULL,NULL,NULL);
     assert File.read("/tmp/scenarios/test2.sql").include?("OMFG")
     assert !File.read("/tmp/scenarios/test2.sql").include?("LOLZ")
   end
+  
+  def test_do_build__with_base_sql_file__builds_new_data_on_top
+    scenario = Performatron::Scenario.new("test1", :base_sql_dump => File.dirname(__FILE__) + "/base.sql") do
+      ActiveRecord::Base.connection.insert "INSERT INTO somethings(name) VALUES ('LOLZ')"
+    end
+    scenario.do_build
+    assert_equal 1, ActiveRecord::Base.connection.select_value("SELECT COUNT(*) FROM others").to_i    
+    assert_equal 2, ActiveRecord::Base.connection.select_value("SELECT COUNT(*) FROM somethings").to_i    
+  end
+
+  def test_load_base_sql__fails_when_migrations_differ
+    Performatron::Scenario.clear_database
+    ActiveRecord::Base.connection.insert "INSERT INTO `schema_migrations` VALUES ('20110101000000')"        
+    scenario = Performatron::Scenario.new("test1", :base_sql_dump => File.dirname(__FILE__) + "/base.sql") do
+      ActiveRecord::Base.connection.insert "INSERT INTO somethings(name) VALUES ('LOLZ')"
+    end
+    assert_raise(RuntimeError) {
+      scenario.load_base_sql
+    }
+  end
 
   def test_data_store
     scenario1 = Performatron::Scenario.new("test1") { |scenario| scenario[:users] = "david" }

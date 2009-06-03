@@ -16,6 +16,10 @@ Installing
 ----------
     ./script/plugin install git://github.com/pivotal/performatron.git
 
+You should also check the requirements below, ensure that you have `httperf` installed on your benchmarker, and that the following line exists in your `Capfile`:
+
+    Dir['vendor/plugins/*/recipes/*.rb'].each { |plugin| load(plugin) }   
+
 Configuration
 -------------
 `/config/performatron.yml`
@@ -134,6 +138,17 @@ over all your users and fetching their profiles, for example.
     end
 
 The attributes of all ActiveRecord objects declared in exported data are dumped to a YAML file in /tmp/scenarios.
+
+#### Using existing data as a base for scenarios
+
+You can use an existing SQL dump (such as a production database dump) as a starting point for generating your scenarios
+The dump is loaded before the block of code is evaluated when the scenario is built.  This is a great way to take an existing
+dataset and add more data onto it to see how it performs in the future.
+
+    Performatron::Scenario.new(:production_plus_1k, :base_sql_dump => "tmp/production.sql") do |scenario|
+      1000.times { User.create! }
+    end
+
 
 ### Sequences
 Sequences are a list of actions that you're interested in the performance of.  They can be any combination of GET, POST,
