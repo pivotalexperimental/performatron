@@ -67,6 +67,8 @@ Configuration
     valid benchmarkee options:
       remote: see above
       environment: see above
+      disable_scenarios: true if you don't want to wipe out the database on the benchmarkee and
+                         disable the use of scenarios completely. See section scenarios below.
       host: the host used when running httperf (must be accessible to the benchmarker)
       port: the port used when running httperf (optional setting defaults to port 80)
       basic_auth: (optional, http basic auth creds used to access the benchmarkee)
@@ -143,12 +145,21 @@ The attributes of all ActiveRecord objects declared in exported data are dumped 
 
 You can use an existing SQL dump (such as a production database dump) as a starting point for generating your scenarios
 The dump is loaded before the block of code is evaluated when the scenario is built.  This is a great way to take an existing
-dataset and add more data onto it to see how it performs in the future.
+dataset and add more data onto it to see how it performs in the future, while keeping test runs repeatable.
 
     Performatron::Scenario.new(:production_plus_1k, :base_sql_dump => "tmp/production.sql") do |scenario|
       1000.times { User.create! }
     end
+    
+#### Disabling scenarios entirely and not clearing the database on the benchmarkee
 
+By default, performatron enables scenario loading.  This will wipe out all the current data in the database on the benchmarkee
+when performance tests are run.  This is good, because it provides a deterministic test environment for running performance tests.
+
+If you want to disable this feature, you can set the `disable_scenarios` option to true
+under the `benchmarkee` hash in `performatron.yml`. If you enable this option, 
+you still need to define a scenario and pass it in to your benchmark, 
+but it will NOT be loaded on the benchmarkee.
 
 ### Sequences
 Sequences are a list of actions that you're interested in the performance of.  They can be any combination of GET, POST,

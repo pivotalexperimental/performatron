@@ -17,7 +17,7 @@ class Performatron::TaskRunner
     Performatron::Benchmark.loaded_benchmarks.each do |bench|
       bench.pieces.each do |piece|
         victim_config = Performatron::Configuration.instance["benchmarkee"]
-        run_task_on_benchmarkee("performatron:load_scenario", {:scenario => piece.scenario.sanitized_name})
+        run_task_on_benchmarkee("performatron:load_scenario", {:scenario => piece.scenario.sanitized_name}) unless victim_config["disable_scenarios"]
         httperf_options = {:filename => "/tmp/scenarios/#{piece.sanitized_name}.bench", 
                                 :rate => piece.rate, :num_sessions => piece.num_sessions, 
                                 :host => victim_config["host"],
