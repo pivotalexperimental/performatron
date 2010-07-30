@@ -258,4 +258,4 @@ Each benchmark will print out 3 important pieces of information
 * *Reply Time* in ms.  You want this to be as low as possible.
 * *Reply Rate* in req/sec. It should be close to the request rate, or the system is not keeping up with the load.
 
-Copyright (c) 2010 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2009-2010 Pivotal Labs and David Stevenson. This software is licensed under the MIT License.
